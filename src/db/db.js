@@ -18,12 +18,10 @@ function getConnection() {
       query(conn, "set autocommit = 0")
         .then(
           () => {
-            // READ UNCOMMITTED - matysiu visus padarytus pakeitimus,
-            //      nepriklausomai nuo to ar jie yra committed ar ne
-            // READ COMMITTED - matysiu padarytus pakeitimus, tik po to, kai jie committed
-            // REPEATABLE READ - man pamacius rezultata, kiti negales pakeisti irasu
-            // SERIALIZABLE - man pamacius rezultata, kiti negales pakeisti irasu
-            //      ir ideti nauju i ta rezi, kuri as pamaciau
+            // READ UNCOMMITTED - matysiu visus padarytus pakeitimus, nepriklausomai nuo to ar jie yra committed ar ne.
+            // READ COMMITTED - matysiu padarytus pakeitimus, tik po to, kai jie committed.
+            // REPEATABLE READ - man pamacius rezultata, kiti negales pakeisti irasu.
+            // SERIALIZABLE - man pamacius rezultata, kiti negales pakeisti irasuir ideti nauju i ta rezi, kuri as pamaciau.
             query(conn, "SET TRANSACTION ISOLATION LEVEL REPEATABLE READ")
             .then(
               () => {
