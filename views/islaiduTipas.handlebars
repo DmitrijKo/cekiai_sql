@@ -1,0 +1,9 @@
+<h1>Išlaidų tipas</h1>
+<form action="/islaiduTipai/save" method="post">
+{{#if tipas}}
+    <input type="hidden" name="id" value="{{tipas.id}}">
+{{/if}}
+    <input type="text" name="pavadinimas" {{#if tipas}}value="{{tipas.pavadinimas}}"{{/if}}>
+    <input type="submit" value="Save">
+</form>
+<a href="/islaiduTipai">Cancel</a>

@@ -1,0 +1,191 @@
+<h1>Čekis</h1>
+<form action="/cekiai/save" method="post">
+{{#if cekis}}
+    <input type="hidden" name="id" value="{{cekis.id}}">
+{{/if}}
+    <input type="date" name="data" {{#if cekis}}value="{{dateFormat cekis.data}}"{{/if}}><br>
+    <select name="pardavejaiId">
+        {{#each pardavejai}}
+        <option value="{{id}}" {{#if ../cekis}}{{#if (eq ../cekis.pardavejaiId id)}}selected{{/if}}{{/if}}>{{pavadinimas}}</option>
+        {{/each}}
+    </select><br>
+    <select name="mokejimuTipaiId">
+        {{#each mokejimuTipai}}
+        <option value="{{id}}" {{#if ../cekis}}{{#if (eq ../cekis.mokejimuTipaiId id)}}selected{{/if}}{{/if}}>{{pavadinimas}}</option>
+        {{/each}}
+    </select><br>
+    <table>
+        <thead>
+            <tr>
+                <th>Preke</th>
+                <th>Kaina</th>
+                <th>Tipas</th>
+                <th><button onclick="addPreke(event)">+</button></th>
+            </tr>
+        </thead>
+        <tbody id="tb">
+        </tbody>
+    </table>
+    <input type="hidden" name="prekes" id="prekes" value="">
+    <input type="submit" onclick="submitCekis(event)" value="Save">
+</form>
+<a href="/cekiai">Cancel</a>
+<script>
+    let nextId = -1;
+    const islaiduTipai = [
+    {{#each islaiduTipai}}
+        {
+            id: {{id}},
+            pavadinimas: "{{pavadinimas}}"
+        },
+    {{/each}}
+    ];
+    const prekes = [
+    {{#if cekis}}
+    {{#each cekis.prekes}}
+        {
+            id: {{id}},
+            pavadinimas: "{{pavadinimas}}",
+            kaina: {{kaina}},
+            islaiduTipaiId: {{islaiduTipaiId}}
+        },
+    {{/each}}
+    {{/if}}
+    ];
+
+function showPrekes() {
+    const tb = document.getElementById("tb");
+    cleanNode(tb);
+    for(const preke of prekes) {
+        const tr = document.createElement("tr");
+        let td;
+        let input;
+        td = document.createElement("td");
+        if (preke.edit) {
+            input = document.createElement("input");
+            input.id = "pavadinimas" + preke.id;
+            input.name = "pavadinimas" + preke.id;
+            input.value = preke.pavadinimas;
+            td.appendChild(input);
+        } else {
+            td.appendChild(document.createTextNode(preke.pavadinimas));
+        }
+        tr.appendChild(td);
+        td = document.createElement("td");
+        if (preke.edit) {
+            input = document.createElement("input");
+            input.id = "kaina" + preke.id;
+            input.name = "kaina" + preke.id;
+            input.value = preke.kaina;
+            td.appendChild(input);
+        } else {
+            td.appendChild(document.createTextNode(preke.kaina));
+        }
+        tr.appendChild(td);
+        td = document.createElement("td");
+        if (preke.edit) {
+            const select = createSelect(preke.islaiduTipaiId);
+            select.id = "islaiduTipaiId" + preke.id;
+            select.name = "islaiduTipaiId" + preke.id;
+            td.appendChild(select);
+        } else {
+            const tipas = islaiduTipai.find(it => it.id === preke.islaiduTipaiId);
+            if (tipas) {
+                td.appendChild(document.createTextNode(tipas.pavadinimas));
+            }
+        }
+        tr.appendChild(td);
+        td = document.createElement("td");
+        let button;
+        if (preke.edit) {
+            button = document.createElement("button");
+            button.appendChild(document.createTextNode("Ok"));
+            button.prekeId = preke.id;
+            button.onclick = savePreke;
+            td.appendChild(button);
+        }
+        button = document.createElement("button");
+        button.appendChild(document.createTextNode("X"));
+        button.prekeId = preke.id;
+        button.onclick = deletePreke;
+        td.appendChild(button);
+        tr.appendChild(td);
+        tb.appendChild(tr);
+    }
+}
+
+function createSelect(selected) {
+    const select = document.createElement("select");
+    for(const tipas of islaiduTipai) {
+        const option = document.createElement("option");
+        option.appendChild(document.createTextNode(tipas.pavadinimas));
+        option.value = tipas.id;
+        if (tipas.id === selected) {
+            option.selected = true;
+        }
+        select.appendChild(option);
+    }
+    return select;
+}
+
+function addPreke(event) {
+    event.preventDefault();
+    prekes.push({
+        id: nextId--,
+        pavadinimas: "",
+        kaina: 0,
+        islaiduTipaiId: "",
+        edit: true
+    });
+    showPrekes();
+}
+
+function savePreke(event) {
+    event.preventDefault();
+    if (event && event.target && event.target.prekeId) {
+        const id = event.target.prekeId;
+        const preke = prekes.find(p => p.id === id);
+        if (preke) {
+            preke.pavadinimas = document.getElementById("pavadinimas" + id).value;
+            preke.kaina = parseFloat(document.getElementById("kaina" + id).value);
+            console.log(document.getElementById("islaiduTipaiId" + id).value)
+            preke.islaiduTipaiId = parseInt(document.getElementById("islaiduTipaiId" + id).value);
+            delete preke.edit;
+            showPrekes();
+        }
+    }
+}
+
+function deletePreke(event) {
+    event.preventDefault();
+    if (event && event.target && event.target.prekeId) {
+        const id = event.target.prekeId;
+        const index = prekes.findIndex(p => p.id === id);
+        if (index >= 0) {
+            prekes.splice(index, 1);
+            showPrekes();
+        }
+    }
+}
+
+function submitCekis(event) {
+    const prekesInput = document.getElementById("prekes");
+    const list = [];
+    for (const preke of prekes) {
+        if (!preke.edit) {
+            list.push(preke);
+        }
+    }
+    prekesInput.value = JSON.stringify(list);
+}
+
+function cleanNode(node) {
+  if (node) {
+    while (node.firstChild) {
+      node.firstChild.remove();
+    }
+  }
+}
+
+showPrekes();
+</script>

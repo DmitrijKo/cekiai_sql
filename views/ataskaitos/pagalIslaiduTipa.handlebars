@@ -1,0 +1,42 @@
+{{> laikoIntervalas}}
+<br>
+{{nuo}} - {{iki}} <br>
+<table>
+    <thead>
+        <tr>
+            <th>Pavadinimas
+                <form action="{{ataskaitosGeneravimas}}/?pavadinimas=up" method="post">
+                    <input type="hidden" name="nuo" value="{{nuo}}"><br>
+                    <input type="hidden" name="iki" value="{{iki}}"><br>
+                    <input type="submit" value="Up">
+                </form>
+                <form action="{{ataskaitosGeneravimas}}/?pavadinimas=down" method="post">
+                    <input type="hidden" name="nuo" value="{{nuo}}"><br>
+                    <input type="hidden" name="iki" value="{{iki}}"><br>
+                    <input type="submit" value="Down">
+                </form>
+            </th>
+            <th>Suma
+                <form action="{{ataskaitosGeneravimas}}/?suma=up" method="post">
+                    <input type="hidden" name="nuo" value="{{nuo}}"><br>
+                    <input type="hidden" name="iki" value="{{iki}}"><br>
+                    <input type="submit" value="Up">
+                </form>
+                <form action="{{ataskaitosGeneravimas}}/?suma=down" method="post">
+                    <input type="hidden" name="nuo" value="{{nuo}}"><br>
+                    <input type="hidden" name="iki" value="{{iki}}"><br>
+                    <input type="submit" value="Down">
+                </form>
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+{{#each irasai}}
+        <tr>
+            <td>{{pavadinimas}}</td>
+            <td>{{suma}}</td>
+        </tr>
+{{/each}}
+    </tbody>
+</table>
+<a href="/">Back</a>
