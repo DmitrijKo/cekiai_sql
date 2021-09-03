@@ -170,11 +170,13 @@ async function update(cekis) {
           forDelete.push(preke.id);
         }
       }
-      await query(
-        conn,
-        "delete from prekes where id in (?)",
-        [forDelete],
-      );
+      if (forDelete.length > 0) {
+         await query(
+           conn,
+           "delete from prekes where id in (?)",
+           [forDelete],
+         );
+      }
       for (const preke of cekis.prekes) {
         if (preke.id < 0) {
           await query(
