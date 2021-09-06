@@ -1,9 +1,9 @@
 import express from "express";
 import moment from "moment";
-import { pagalIslaiduTipa } from "./dbPG/ataskaitos.js";
-import {pagalPardaveja} from "./dbPG/ataskaitos.js";
-import {pagalVisas} from "./dbPG/ataskaitos.js";
-import {pagalMokejimoTipa} from "./dbPG/ataskaitos.js";
+import { pagalIslaiduTipa } from "./dbMySql/ataskaitos.js";
+import {pagalPardaveja} from "./dbMySql/ataskaitos.js";
+import {pagalVisas} from "./dbMySql/ataskaitos.js";
+import {pagalMokejimoTipa} from "./dbMySql/ataskaitos.js";
 
 export const router = express.Router();
 

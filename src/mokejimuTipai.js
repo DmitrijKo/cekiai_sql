@@ -5,7 +5,7 @@ import {
   getOne,
   insert,
   update,
-} from "./dbPG/mokejimuTipai.js";
+} from "./dbMySql/mokejimuTipai.js";
 
 export const router = express.Router();
 

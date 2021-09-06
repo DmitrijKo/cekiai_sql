@@ -1,10 +1,7 @@
 import {
-  commit,
   endConnection,
   getConnection,
   query,
-  rollback,
-  startTx,
 } from "./db.js";
 
 async function login(name, pass) {
