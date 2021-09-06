@@ -1,9 +1,9 @@
 import express from "express";
 import moment from "moment";
-import {pagalIslaiduTipa} from "./db/ataskaitos.js";
-import {pagalPardaveja} from "./db/ataskaitos.js";
-import {pagalVisas} from "./db/ataskaitos.js";
-import {pagalMokejimoTipa} from "./db/ataskaitos.js";
+import { pagalIslaiduTipa } from "./dbPG/ataskaitos.js";
+import {pagalPardaveja} from "./dbPG/ataskaitos.js";
+import {pagalVisas} from "./dbPG/ataskaitos.js";
+import {pagalMokejimoTipa} from "./dbPG/ataskaitos.js";
 
 export const router = express.Router();
 
@@ -20,7 +20,7 @@ router.post("/pagalIslaiduTipa", async (req, res) => {
    let nuo = moment(req.body.nuo, "YYYY-MM-DD", true);
    let iki = moment(req.body.iki, "YYYY-MM-DD", true);
    if (!nuo.isValid()) {
-      nuo = moment("0000-01-01", "YYYY-MM-DD", true);
+      nuo = moment("0001-01-01", "YYYY-MM-DD", true);
    }
    if (!iki.isValid()) {
       iki = moment("9999-12-31", "YYYY-MM-DD", true);
@@ -55,7 +55,7 @@ router.post("/pagalPardaveja", async (req, res) => {
    let nuo = moment(req.body.nuo, "YYYY-MM-DD", true);
    let iki = moment(req.body.iki, "YYYY-MM-DD", true);
    if (!nuo.isValid()) {
-      nuo = moment("0000-01-01", "YYYY-MM-DD", true);
+      nuo = moment("0001-01-01", "YYYY-MM-DD", true);
    }
    if (!iki.isValid()) {
       iki = moment("9999-12-31", "YYYY-MM-DD", true);
@@ -90,7 +90,7 @@ router.post("/pagalPardaveja", async (req, res) => {
    let nuo = moment(req.body.nuo, "YYYY-MM-DD", true);
    let iki = moment(req.body.iki, "YYYY-MM-DD", true);
    if (!nuo.isValid()) {
-     nuo = moment("0000-01-01", "YYYY-MM-DD", true);
+     nuo = moment("0001-01-01", "YYYY-MM-DD", true);
    }
    if (!iki.isValid()) {
      iki = moment("9999-12-31", "YYYY-MM-DD", true);
@@ -125,7 +125,7 @@ router.post("/pagalPardaveja", async (req, res) => {
    let nuo = moment(req.body.nuo, "YYYY-MM-DD", true);
    let iki = moment(req.body.iki, "YYYY-MM-DD", true);
    if (!nuo.isValid()) {
-     nuo = moment("0000-01-01", "YYYY-MM-DD", true);
+     nuo = moment("0001-01-01", "YYYY-MM-DD", true);
    }
    if (!iki.isValid()) {
      iki = moment("9999-12-31", "YYYY-MM-DD", true);

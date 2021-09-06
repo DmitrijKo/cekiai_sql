@@ -1,5 +1,5 @@
 import express from "express";
-import { deleteOne, getAll, getOne, insert, update } from "./db/pardavejai.js";
+import { deleteOne, getAll, getOne, insert, update } from "./dbPG/pardavejai.js";
 
 export const router = express.Router();
 

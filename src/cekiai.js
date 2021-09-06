@@ -1,21 +1,58 @@
 import express from "express";
-import { getAll as getIslaiduTipai } from "./db/islaiduTipai.js";
-import { getAll as getMokejimuTipai } from "./db/mokejimuTipai.js";
-import { getAll as getPardavejai } from "./db/pardavejai.js";
+import { getAll as getIslaiduTipaiPG } from "./dbPG/islaiduTipai.js";
+import { getAll as getMokejimuTipaiPG } from "./dbPG/mokejimuTipai.js";
+import { getAll as getPardavejaiPG } from "./dbPG/pardavejai.js";
 import {
-  deleteOne,
-  getAll,
-  getOne,
-  insert,
-  update,
-} from "./db/cekiai.js";
+  deleteOne as deleteOnePG,
+  getAll as getAllPG,
+  getOne as getOnePG,
+  insert as insertPG,
+  update as updatePG,
+} from "./dbPG/cekiai.js";
+import { getAll as getIslaiduTipaiMySql } from "./dbMySql/islaiduTipai.js";
+import { getAll as getMokejimuTipaiMySql } from "./dbMySql/mokejimuTipai.js";
+import { getAll as getPardavejaiMySql } from "./dbMySql/pardavejai.js";
+import {
+  deleteOne as deleteOneMySql,
+  getAll as getAllMySql,
+  getOne as getOneMySql,
+  insert as insertMySql,
+  update as updateMySql,
+} from "./dbMySql/cekiai.js";
+
+function dbSelect(type) {
+  if (type === "pg") {
+    return {
+      getIslaiduTipai: getIslaiduTipaiPG,
+      getMokejimuTipai: getMokejimuTipaiPG,
+      getPardavejai: getPardavejaiPG,
+      deleteOne: deleteOnePG,
+      getAll: getAllPG,
+      getOne: getOnePG,
+      insert: insertPG,
+      update: updatePG
+    }
+  } else {
+    return {
+      getIslaiduTipai: getIslaiduTipaiMySql,
+      getMokejimuTipai: getMokejimuTipaiMySql,
+      getPardavejai: getPardavejaiMySql,
+      deleteOne: deleteOneMySql,
+      getAll: getAllMySql,
+      getOne: getOneMySql,
+      insert: insertMySql,
+      update: updateMySql
+    }
+  }
+}
 
 export const router = express.Router();
 
 router.get("/", async (req, res) => {
+  const f = dbSelect(req.query.dbType);
   res.set("Content-Type", "text/html; charset=utf8");
   try {
-    const cekiai = await getAll();
+    const cekiai = await f.getAll();
     res.render("cekiai", {
       title: "Čekiai",
       list: cekiai,
@@ -26,13 +63,14 @@ router.get("/", async (req, res) => {
 });
 
 router.get("/edit/:id?", async (req, res) => {
+  const f = dbSelect(req.query.dbType);
   res.set("Content-Type", "text/html; charset=utf8");
   try {
-    const islaiduTipai = await getIslaiduTipai();
-    const mokejimuTipai = await getMokejimuTipai();
-    const pardavejai = await getPardavejai();
+    const islaiduTipai = await f.getIslaiduTipai(req.session?.userId);
+    const mokejimuTipai = await f.getMokejimuTipai();
+    const pardavejai = await f.getPardavejai();
     if (req.params.id) {
-      const cekis = await getOne(req.params.id);
+      const cekis = await f.getOne(req.params.id);
       res.render("cekis", {
         title: "Redaguojam čekį",
         islaiduTipai,
@@ -54,11 +92,12 @@ router.get("/edit/:id?", async (req, res) => {
 });
 
 router.post("/save", async (req, res) => {
+  const f = dbSelect(req.query.dbType);
   res.set("Content-Type", "text/html; charset=utf8");
   try {
     let cekis;
     if (req.body.id) {
-      cekis = await update({
+      cekis = await f.update({
         id: req.body.id,
         data: req.body.data,
         pardavejaiId: parseInt(req.body.pardavejaiId),
@@ -66,7 +105,7 @@ router.post("/save", async (req, res) => {
         prekes: JSON.parse(req.body.prekes)
       });
     } else {
-      cekis = await insert({
+      cekis = await f.insert({
         data: req.body.data,
         pardavejaiId: parseInt(req.body.pardavejaiId),
         mokejimuTipaiId: parseInt(req.body.mokejimuTipaiId),
@@ -81,9 +120,10 @@ router.post("/save", async (req, res) => {
 });
 
 router.get("/delete/:id", async (req, res) => {
+  const f = dbSelect(req.query.dbType);
   res.set("Content-Type", "text/html; charset=utf8");
   try {
-    const record = await deleteOne(req.params.id);
+    const record = await f.deleteOne(req.params.id);
     res.redirect("/cekiai");
   } catch (err) {
     res.status(500).end(`Įvyko klaida: ${err.message}`);
