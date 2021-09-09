@@ -52,7 +52,7 @@ router.post("/save", async (req, res) => {
     if (req.body.id) {
       record = await update(req.session?.userId, req.body.id, req.body.pavadinimas);
     } else {
-      record = await insert(req.body.pavadinimas);
+      record = await insert(req.session?.userId, req.body.pavadinimas);
     }
     res.redirect("/mokejimuTipai");
   } catch (err) {

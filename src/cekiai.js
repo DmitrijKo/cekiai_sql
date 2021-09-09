@@ -52,7 +52,7 @@ router.get("/", async (req, res) => {
   const f = dbSelect(req.query.dbType);
   res.set("Content-Type", "text/html; charset=utf8");
   try {
-    const cekiai = await f.getAll();
+    const cekiai = await f.getAll(req.session?.userId);
     res.render("cekiai", {
       title: "Čekiai",
       list: cekiai,
@@ -70,7 +70,7 @@ router.get("/edit/:id?", async (req, res) => {
     const mokejimuTipai = await f.getMokejimuTipai(req.session?.userId);
     const pardavejai = await f.getPardavejai(req.session?.userId);
     if (req.params.id) {
-      const cekis = await f.getOne(req.params.id);
+      const cekis = await f.getOne(req.session?.userId, req.params.id);
       res.render("cekis", {
         title: "Redaguojam čekį",
         islaiduTipai,
@@ -123,7 +123,7 @@ router.get("/delete/:id", async (req, res) => {
   const f = dbSelect(req.query.dbType);
   res.set("Content-Type", "text/html; charset=utf8");
   try {
-    const record = await f.deleteOne(req.params.id);
+    const record = await f.deleteOne(req.session?.userId, req.params.id);
     res.redirect("/cekiai");
   } catch (err) {
     res.status(500).end(`Įvyko klaida: ${err.message}`);
