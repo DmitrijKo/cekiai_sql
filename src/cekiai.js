@@ -67,8 +67,8 @@ router.get("/edit/:id?", async (req, res) => {
   res.set("Content-Type", "text/html; charset=utf8");
   try {
     const islaiduTipai = await f.getIslaiduTipai(req.session?.userId);
-    const mokejimuTipai = await f.getMokejimuTipai();
-    const pardavejai = await f.getPardavejai();
+    const mokejimuTipai = await f.getMokejimuTipai(req.session?.userId);
+    const pardavejai = await f.getPardavejai(req.session?.userId);
     if (req.params.id) {
       const cekis = await f.getOne(req.params.id);
       res.render("cekis", {
@@ -97,7 +97,7 @@ router.post("/save", async (req, res) => {
   try {
     let cekis;
     if (req.body.id) {
-      cekis = await f.update({
+      cekis = await f.update(req.session?.userId, {
         id: req.body.id,
         data: req.body.data,
         pardavejaiId: parseInt(req.body.pardavejaiId),
@@ -105,7 +105,7 @@ router.post("/save", async (req, res) => {
         prekes: JSON.parse(req.body.prekes)
       });
     } else {
-      cekis = await f.insert({
+      cekis = await f.insert(req.session?.userId, {
         data: req.body.data,
         pardavejaiId: parseInt(req.body.pardavejaiId),
         mokejimuTipaiId: parseInt(req.body.mokejimuTipaiId),
