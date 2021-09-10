@@ -47,7 +47,7 @@ app.use(session({
   saveUninitialized: true,
   resave: true,
   cookie: {
-    maxAge: 30000,
+    maxAge: 1800000,
   },
   secret: "cia_mano_sessiju_pass",
 }));

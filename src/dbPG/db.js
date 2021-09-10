@@ -4,8 +4,8 @@ types.setTypeParser(types.builtins.INT8, val => parseInt(val));
 types.setTypeParser(types.builtins.NUMERIC, val => parseFloat(val));
 
 const options = {
-  host: "localhost",
-  port: 5432,
+  host: "192.168.1.2",
+  port: 5434,
   database: "cekiai",
   user: "node_cekiai",
   password: "node_cekiai",

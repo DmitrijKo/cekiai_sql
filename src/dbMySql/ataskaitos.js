@@ -1,8 +1,4 @@
-import {
-   endConnection,
-   getConnection,
-   query,
-} from "./db.js";
+import { endConnection, getConnection, query } from "./db.js";
 
 // Pagal islaidu tipa
 async function pagalIslaiduTipa(nuo, iki, sort) {

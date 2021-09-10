@@ -1,3 +1,5 @@
+import { checkPermission } from "../dbSec/users.js";
+
 import {
   commit,
   endConnection,
@@ -7,7 +9,10 @@ import {
   startTx,
 } from "./db.js";
 
-async function getAll() {
+async function getAll(userId) {
+   if (!await checkPermission(userId, "pardavejai_select")) {
+      throw new Error("Permission denied");
+   }
   let conn;
   try {
     conn = await getConnection();
@@ -23,7 +28,10 @@ async function getAll() {
   }
 }
 
-async function getOne(id) {
+async function getOne(userId, id) {
+   if (!await checkPermission(userId, "pardavejai_select")) {
+      throw new Error("Permission denied");
+   }
   id = parseInt(id);
   if (!isFinite(id)) {
     return null;
@@ -48,7 +56,10 @@ async function getOne(id) {
   }
 }
 
-async function insert(pavadinimas) {
+async function insert(userId, pavadinimas) {
+   if (!await checkPermission(userId, "pardavejai_insert")) {
+      throw new Error("Permission denied");
+   }
   if (typeof pavadinimas !== "string" || pavadinimas.trim() === "") {
     return null;
   }
@@ -64,7 +75,7 @@ async function insert(pavadinimas) {
     );
     if (results.affectedRows > 0) {
       tx = await commit(conn);
-      return getOne(results.insertId);
+      return getOne(userId, results.insertId);
     } else {
       return null;
     }
@@ -78,7 +89,10 @@ async function insert(pavadinimas) {
   }
 }
 
-async function update(id, pavadinimas) {
+async function update(userId, id, pavadinimas) {
+   if (!await checkPermission(userId, "pardavejai_update")) {
+      throw new Error("Permission denied");
+   }
   id = parseInt(id);
   if (!isFinite(id)) {
     return null;
@@ -98,7 +112,7 @@ async function update(id, pavadinimas) {
     );
     if (results.affectedRows > 0) {
       tx = await commit(conn);
-      return getOne(id);
+      return getOne(userId, id);
     } else {
       return null;
     }
@@ -112,7 +126,10 @@ async function update(id, pavadinimas) {
   }
 }
 
-async function deleteOne(id) {
+async function deleteOne(userId, id) {
+   if (!await checkPermission(userId, "pardavejai_delete")) {
+      throw new Error("Permission denied");
+   }
   id = parseInt(id);
   if (!isFinite(id)) {
     return null;
@@ -120,7 +137,7 @@ async function deleteOne(id) {
   let conn;
   let tx;
   try {
-    const one = await getOne(id);
+    const one = await getOne(userId, id);
     conn = await getConnection();
     tx = await startTx(conn);
     const { results } = await query(

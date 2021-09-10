@@ -56,6 +56,7 @@ router.post("/save", async (req, res) => {
     }
     res.redirect("/islaiduTipai");
   } catch (err) {
+     console.log(err);
     res.status(500).end(`Įvyko klaida: ${err.message}`);
   }
 });

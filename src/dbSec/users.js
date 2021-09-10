@@ -1,4 +1,5 @@
 import {
+  commit,
   endConnection,
   getConnection,
   query,

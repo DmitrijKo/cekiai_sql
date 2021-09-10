@@ -52,7 +52,7 @@ router.get("/", async (req, res) => {
   const f = dbSelect(req.query.dbType);
   res.set("Content-Type", "text/html; charset=utf8");
   try {
-    const cekiai = await f.getAll(req.session?.userId);
+    const cekiai = await f.getAll();
     res.render("cekiai", {
       title: "Čekiai",
       list: cekiai,
@@ -70,7 +70,7 @@ router.get("/edit/:id?", async (req, res) => {
     const mokejimuTipai = await f.getMokejimuTipai(req.session?.userId);
     const pardavejai = await f.getPardavejai(req.session?.userId);
     if (req.params.id) {
-      const cekis = await f.getOne(req.session?.userId, req.params.id);
+      const cekis = await f.getOne(req.params.id);
       res.render("cekis", {
         title: "Redaguojam čekį",
         islaiduTipai,
@@ -97,7 +97,7 @@ router.post("/save", async (req, res) => {
   try {
     let cekis;
     if (req.body.id) {
-      cekis = await f.update(req.session?.userId, {
+      cekis = await f.update({
         id: req.body.id,
         data: req.body.data,
         pardavejaiId: parseInt(req.body.pardavejaiId),
@@ -105,7 +105,7 @@ router.post("/save", async (req, res) => {
         prekes: JSON.parse(req.body.prekes)
       });
     } else {
-      cekis = await f.insert(req.session?.userId, {
+      cekis = await f.insert({
         data: req.body.data,
         pardavejaiId: parseInt(req.body.pardavejaiId),
         mokejimuTipaiId: parseInt(req.body.mokejimuTipaiId),
@@ -123,7 +123,7 @@ router.get("/delete/:id", async (req, res) => {
   const f = dbSelect(req.query.dbType);
   res.set("Content-Type", "text/html; charset=utf8");
   try {
-    const record = await f.deleteOne(req.session?.userId, req.params.id);
+    const record = await f.deleteOne(req.params.id);
     res.redirect("/cekiai");
   } catch (err) {
     res.status(500).end(`Įvyko klaida: ${err.message}`);

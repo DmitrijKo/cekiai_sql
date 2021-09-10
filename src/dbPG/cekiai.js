@@ -13,27 +13,43 @@ async function getAll() {
     conn = await getConnection();
     const { rows } = await query(
       conn,
-      `
-   select
-      cekiai.id,
-      data,
-      pardavejai_id as "pardavejaiId",
-      pardavejai.pavadinimas as pardavejas,
-      mokejimu_tipai_id as "mokejimuTipaiId",
-      mokejimu_tipai.pavadinimas as "mokejimuTipas",
-      prekes.id as "prekesId",
-      prekes.pavadinimas,
-      kaina,
-      islaidu_tipai_id as "islaiduTipaiId",
-      islaidu_tipai.pavadinimas as "islaiduTipas"
-   from cekiai
-      left join pardavejai on cekiai.pardavejai_id = pardavejai.id
-      left join mokejimu_tipai on cekiai.mokejimu_tipai_id = mokejimu_tipai.id
-      left join prekes on prekes.cekiai_id = cekiai.id
-      left join islaidu_tipai on prekes.islaidu_tipai_id = islaidu_tipai.id
-   order by data, id
+//       `
+// select
+//   cekiai.id,
+//   data,
+//   pardavejai_id as "pardavejaiId",
+//   pardavejai.pavadinimas as pardavejas,
+//   mokejimu_tipai_id as "mokejimuTipaiId",
+//   mokejimu_tipai.pavadinimas as "mokejimuTipas"
+// from cekiai
+//   left join pardavejai on cekiai.pardavejai_id = pardavejai.id
+//   left join mokejimu_tipai on cekiai.mokejimu_tipai_id = mokejimu_tipai.id
+// order by data
+//       `,
+        `
+select
+  cekiai.id,
+  data,
+  pardavejai_id as "pardavejaiId",
+  pardavejai.pavadinimas as pardavejas,
+  mokejimu_tipai_id as "mokejimuTipaiId",
+  mokejimu_tipai.pavadinimas as "mokejimuTipas",
+  prekes.id as "prekesId",
+  prekes.pavadinimas,
+  kaina,
+  islaidu_tipai_id as "islaiduTipaiId",
+  islaidu_tipai.pavadinimas as "islaiduTipas"
+from cekiai
+  left join pardavejai on cekiai.pardavejai_id = pardavejai.id
+  left join mokejimu_tipai on cekiai.mokejimu_tipai_id = mokejimu_tipai.id
+  left join prekes on prekes.cekiai_id = cekiai.id
+  left join islaidu_tipai on prekes.islaidu_tipai_id = islaidu_tipai.id
+order by data, id
         `,
     );
+    // for (const record of rows) {
+    //   record.prekes = await getPrekes(record.id);
+    // }
     const cekiai = [];
     for (const record of rows) {
       let cekis = cekiai.find(c => c.id === record.id);

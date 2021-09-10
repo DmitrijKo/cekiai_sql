@@ -1,4 +1,5 @@
 import { checkPermission } from "../dbSec/users.js";
+
 import {
   commit,
   endConnection,
@@ -67,7 +68,7 @@ async function insert(userId, pavadinimas) {
   try {
     conn = await getConnection();
     tx = await startTx(conn);
-    await query(
+    const { results } = await query(
       conn,
       "insert into islaidu_tipai (pavadinimas) values (?)",
       [pavadinimas],
